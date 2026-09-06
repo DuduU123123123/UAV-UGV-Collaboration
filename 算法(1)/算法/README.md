@@ -44,11 +44,36 @@ python changping_min_solver.py --input data/changping_min_instance.json --output
 python changping_min_solver.py --spare-batteries 4 --output-dir results_feasible
 ```
 
+覆盖总时间窗口。该参数会同步调整车辆班次结束时间，以及原本等于基础总时域的任务截止时间：
+
+```powershell
+python changping_min_solver.py --input data/changping_min_instance.json --time-horizon 135 --spare-batteries 4 --output-dir results_h135_b04
+```
+
 允许车辆反向运行：
 
 ```powershell
 python changping_min_solver.py --allow-reverse
 ```
+
+## 批量实验
+
+运行120、125、135、150分钟与2、3、4、5组备用电池的全部16种组合：
+
+```powershell
+python run_experiments.py
+```
+
+输出目录为`experiments/`：
+
+- `experiment_matrix.csv`：一行一个实验，可直接用于Excel统计和绘图；
+- `run_manifest.json`：保留数组类型的机器可读综合结果；
+- `h{时间窗口}_b{电池数量}/summary.json`：单组实验的完整结果与合法性校验；
+- `h{时间窗口}_b{电池数量}/timeline.csv`：单组实验的逐动作时间线。
+
+综合结果包含实验参数、可行性、任务完成率、无人机—任务对应关系、完工时间、换电次数、无人机活动时间、车辆运行时间、最终电量、求解耗时、搜索规模和校验状态。
+
+不可行场景返回最佳部分方案并标记为`BEST_PARTIAL`，不代表程序运行失败。批量脚本要求每组输出均通过时间、SOC、换电、任务时间窗和最终状态一致性校验。
 
 ## 已建模的弧
 

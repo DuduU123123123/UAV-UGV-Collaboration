@@ -1,0 +1,606 @@
+[
+  {
+    "experiment_id": "h120_b02",
+    "time_horizon_min": 120,
+    "spare_battery_sets": 2,
+    "allow_reverse": false,
+    "status": "INFEASIBLE_ALL_TASKS_BEST_PARTIAL_RETURNED",
+    "feasible": false,
+    "solution_kind": "BEST_PARTIAL",
+    "total_task_count": 5,
+    "completed_task_count": 3,
+    "completion_rate_pct": 60.0,
+    "completed_task_ids": [
+      "T01",
+      "T03",
+      "T04"
+    ],
+    "uncompleted_task_ids": [
+      "T02",
+      "T05"
+    ],
+    "uav_task_mapping": [
+      "U01:T01",
+      "U01:T03",
+      "U01:T04"
+    ],
+    "finish_time_min": 95,
+    "swaps_used": 2,
+    "drone_active_time_min": 60,
+    "vehicle_travel_time_min": 50,
+    "current_soc_pct": 40,
+    "runtime_ms": 4.814,
+    "expanded_labels": 217,
+    "generated_labels": 217,
+    "validation_passed": true,
+    "validation_check_count": 84,
+    "output_directory": "h120_b02"
+  },
+  {
+    "experiment_id": "h120_b03",
+    "time_horizon_min": 120,
+    "spare_battery_sets": 3,
+    "allow_reverse": false,
+    "status": "INFEASIBLE_ALL_TASKS_BEST_PARTIAL_RETURNED",
+    "feasible": false,
+    "solution_kind": "BEST_PARTIAL",
+    "total_task_count": 5,
+    "completed_task_count": 4,
+    "completion_rate_pct": 80.0,
+    "completed_task_ids": [
+      "T01",
+      "T02",
+      "T03",
+      "T04"
+    ],
+    "uncompleted_task_ids": [
+      "T05"
+    ],
+    "uav_task_mapping": [
+      "U01:T01",
+      "U01:T02",
+      "U01:T03",
+      "U01:T04"
+    ],
+    "finish_time_min": 115,
+    "swaps_used": 3,
+    "drone_active_time_min": 90,
+    "vehicle_travel_time_min": 50,
+    "current_soc_pct": 40,
+    "runtime_ms": 4.237,
+    "expanded_labels": 269,
+    "generated_labels": 269,
+    "validation_passed": true,
+    "validation_check_count": 98,
+    "output_directory": "h120_b03"
+  },
+  {
+    "experiment_id": "h120_b04",
+    "time_horizon_min": 120,
+    "spare_battery_sets": 4,
+    "allow_reverse": false,
+    "status": "INFEASIBLE_ALL_TASKS_BEST_PARTIAL_RETURNED",
+    "feasible": false,
+    "solution_kind": "BEST_PARTIAL",
+    "total_task_count": 5,
+    "completed_task_count": 4,
+    "completion_rate_pct": 80.0,
+    "completed_task_ids": [
+      "T01",
+      "T02",
+      "T03",
+      "T04"
+    ],
+    "uncompleted_task_ids": [
+      "T05"
+    ],
+    "uav_task_mapping": [
+      "U01:T01",
+      "U01:T02",
+      "U01:T03",
+      "U01:T04"
+    ],
+    "finish_time_min": 115,
+    "swaps_used": 3,
+    "drone_active_time_min": 90,
+    "vehicle_travel_time_min": 50,
+    "current_soc_pct": 40,
+    "runtime_ms": 6.635,
+    "expanded_labels": 278,
+    "generated_labels": 278,
+    "validation_passed": true,
+    "validation_check_count": 98,
+    "output_directory": "h120_b04"
+  },
+  {
+    "experiment_id": "h120_b05",
+    "time_horizon_min": 120,
+    "spare_battery_sets": 5,
+    "allow_reverse": false,
+    "status": "INFEASIBLE_ALL_TASKS_BEST_PARTIAL_RETURNED",
+    "feasible": false,
+    "solution_kind": "BEST_PARTIAL",
+    "total_task_count": 5,
+    "completed_task_count": 4,
+    "completion_rate_pct": 80.0,
+    "completed_task_ids": [
+      "T01",
+      "T02",
+      "T03",
+      "T04"
+    ],
+    "uncompleted_task_ids": [
+      "T05"
+    ],
+    "uav_task_mapping": [
+      "U01:T01",
+      "U01:T02",
+      "U01:T03",
+      "U01:T04"
+    ],
+    "finish_time_min": 115,
+    "swaps_used": 3,
+    "drone_active_time_min": 90,
+    "vehicle_travel_time_min": 50,
+    "current_soc_pct": 40,
+    "runtime_ms": 7.956,
+    "expanded_labels": 278,
+    "generated_labels": 278,
+    "validation_passed": true,
+    "validation_check_count": 98,
+    "output_directory": "h120_b05"
+  },
+  {
+    "experiment_id": "h125_b02",
+    "time_horizon_min": 125,
+    "spare_battery_sets": 2,
+    "allow_reverse": false,
+    "status": "INFEASIBLE_ALL_TASKS_BEST_PARTIAL_RETURNED",
+    "feasible": false,
+    "solution_kind": "BEST_PARTIAL",
+    "total_task_count": 5,
+    "completed_task_count": 3,
+    "completion_rate_pct": 60.0,
+    "completed_task_ids": [
+      "T01",
+      "T03",
+      "T04"
+    ],
+    "uncompleted_task_ids": [
+      "T02",
+      "T05"
+    ],
+    "uav_task_mapping": [
+      "U01:T01",
+      "U01:T03",
+      "U01:T04"
+    ],
+    "finish_time_min": 95,
+    "swaps_used": 2,
+    "drone_active_time_min": 60,
+    "vehicle_travel_time_min": 50,
+    "current_soc_pct": 40,
+    "runtime_ms": 4.482,
+    "expanded_labels": 217,
+    "generated_labels": 217,
+    "validation_passed": true,
+    "validation_check_count": 84,
+    "output_directory": "h125_b02"
+  },
+  {
+    "experiment_id": "h125_b03",
+    "time_horizon_min": 125,
+    "spare_battery_sets": 3,
+    "allow_reverse": false,
+    "status": "INFEASIBLE_ALL_TASKS_BEST_PARTIAL_RETURNED",
+    "feasible": false,
+    "solution_kind": "BEST_PARTIAL",
+    "total_task_count": 5,
+    "completed_task_count": 4,
+    "completion_rate_pct": 80.0,
+    "completed_task_ids": [
+      "T01",
+      "T02",
+      "T03",
+      "T04"
+    ],
+    "uncompleted_task_ids": [
+      "T05"
+    ],
+    "uav_task_mapping": [
+      "U01:T01",
+      "U01:T02",
+      "U01:T03",
+      "U01:T04"
+    ],
+    "finish_time_min": 115,
+    "swaps_used": 3,
+    "drone_active_time_min": 90,
+    "vehicle_travel_time_min": 50,
+    "current_soc_pct": 40,
+    "runtime_ms": 6.379,
+    "expanded_labels": 275,
+    "generated_labels": 275,
+    "validation_passed": true,
+    "validation_check_count": 98,
+    "output_directory": "h125_b03"
+  },
+  {
+    "experiment_id": "h125_b04",
+    "time_horizon_min": 125,
+    "spare_battery_sets": 4,
+    "allow_reverse": false,
+    "status": "INFEASIBLE_ALL_TASKS_BEST_PARTIAL_RETURNED",
+    "feasible": false,
+    "solution_kind": "BEST_PARTIAL",
+    "total_task_count": 5,
+    "completed_task_count": 4,
+    "completion_rate_pct": 80.0,
+    "completed_task_ids": [
+      "T01",
+      "T02",
+      "T03",
+      "T04"
+    ],
+    "uncompleted_task_ids": [
+      "T05"
+    ],
+    "uav_task_mapping": [
+      "U01:T01",
+      "U01:T02",
+      "U01:T03",
+      "U01:T04"
+    ],
+    "finish_time_min": 115,
+    "swaps_used": 3,
+    "drone_active_time_min": 90,
+    "vehicle_travel_time_min": 50,
+    "current_soc_pct": 40,
+    "runtime_ms": 5.827,
+    "expanded_labels": 287,
+    "generated_labels": 287,
+    "validation_passed": true,
+    "validation_check_count": 98,
+    "output_directory": "h125_b04"
+  },
+  {
+    "experiment_id": "h125_b05",
+    "time_horizon_min": 125,
+    "spare_battery_sets": 5,
+    "allow_reverse": false,
+    "status": "INFEASIBLE_ALL_TASKS_BEST_PARTIAL_RETURNED",
+    "feasible": false,
+    "solution_kind": "BEST_PARTIAL",
+    "total_task_count": 5,
+    "completed_task_count": 4,
+    "completion_rate_pct": 80.0,
+    "completed_task_ids": [
+      "T01",
+      "T02",
+      "T03",
+      "T04"
+    ],
+    "uncompleted_task_ids": [
+      "T05"
+    ],
+    "uav_task_mapping": [
+      "U01:T01",
+      "U01:T02",
+      "U01:T03",
+      "U01:T04"
+    ],
+    "finish_time_min": 115,
+    "swaps_used": 3,
+    "drone_active_time_min": 90,
+    "vehicle_travel_time_min": 50,
+    "current_soc_pct": 40,
+    "runtime_ms": 4.282,
+    "expanded_labels": 287,
+    "generated_labels": 287,
+    "validation_passed": true,
+    "validation_check_count": 98,
+    "output_directory": "h125_b05"
+  },
+  {
+    "experiment_id": "h135_b02",
+    "time_horizon_min": 135,
+    "spare_battery_sets": 2,
+    "allow_reverse": false,
+    "status": "INFEASIBLE_ALL_TASKS_BEST_PARTIAL_RETURNED",
+    "feasible": false,
+    "solution_kind": "BEST_PARTIAL",
+    "total_task_count": 5,
+    "completed_task_count": 3,
+    "completion_rate_pct": 60.0,
+    "completed_task_ids": [
+      "T01",
+      "T03",
+      "T04"
+    ],
+    "uncompleted_task_ids": [
+      "T02",
+      "T05"
+    ],
+    "uav_task_mapping": [
+      "U01:T01",
+      "U01:T03",
+      "U01:T04"
+    ],
+    "finish_time_min": 95,
+    "swaps_used": 2,
+    "drone_active_time_min": 60,
+    "vehicle_travel_time_min": 50,
+    "current_soc_pct": 40,
+    "runtime_ms": 4.922,
+    "expanded_labels": 217,
+    "generated_labels": 217,
+    "validation_passed": true,
+    "validation_check_count": 84,
+    "output_directory": "h135_b02"
+  },
+  {
+    "experiment_id": "h135_b03",
+    "time_horizon_min": 135,
+    "spare_battery_sets": 3,
+    "allow_reverse": false,
+    "status": "INFEASIBLE_ALL_TASKS_BEST_PARTIAL_RETURNED",
+    "feasible": false,
+    "solution_kind": "BEST_PARTIAL",
+    "total_task_count": 5,
+    "completed_task_count": 4,
+    "completion_rate_pct": 80.0,
+    "completed_task_ids": [
+      "T01",
+      "T02",
+      "T03",
+      "T04"
+    ],
+    "uncompleted_task_ids": [
+      "T05"
+    ],
+    "uav_task_mapping": [
+      "U01:T01",
+      "U01:T02",
+      "U01:T03",
+      "U01:T04"
+    ],
+    "finish_time_min": 115,
+    "swaps_used": 3,
+    "drone_active_time_min": 90,
+    "vehicle_travel_time_min": 50,
+    "current_soc_pct": 40,
+    "runtime_ms": 5.253,
+    "expanded_labels": 277,
+    "generated_labels": 277,
+    "validation_passed": true,
+    "validation_check_count": 98,
+    "output_directory": "h135_b03"
+  },
+  {
+    "experiment_id": "h135_b04",
+    "time_horizon_min": 135,
+    "spare_battery_sets": 4,
+    "allow_reverse": false,
+    "status": "FEASIBLE_OPTIMAL",
+    "feasible": true,
+    "solution_kind": "FULL",
+    "total_task_count": 5,
+    "completed_task_count": 5,
+    "completion_rate_pct": 100.0,
+    "completed_task_ids": [
+      "T01",
+      "T02",
+      "T03",
+      "T04",
+      "T05"
+    ],
+    "uncompleted_task_ids": [],
+    "uav_task_mapping": [
+      "U01:T01",
+      "U01:T02",
+      "U01:T03",
+      "U01:T04",
+      "U01:T05"
+    ],
+    "finish_time_min": 135,
+    "swaps_used": 4,
+    "drone_active_time_min": 115,
+    "vehicle_travel_time_min": 50,
+    "current_soc_pct": 40,
+    "runtime_ms": 4.727,
+    "expanded_labels": 294,
+    "generated_labels": 294,
+    "validation_passed": true,
+    "validation_check_count": 114,
+    "output_directory": "h135_b04"
+  },
+  {
+    "experiment_id": "h135_b05",
+    "time_horizon_min": 135,
+    "spare_battery_sets": 5,
+    "allow_reverse": false,
+    "status": "FEASIBLE_OPTIMAL",
+    "feasible": true,
+    "solution_kind": "FULL",
+    "total_task_count": 5,
+    "completed_task_count": 5,
+    "completion_rate_pct": 100.0,
+    "completed_task_ids": [
+      "T01",
+      "T02",
+      "T03",
+      "T04",
+      "T05"
+    ],
+    "uncompleted_task_ids": [],
+    "uav_task_mapping": [
+      "U01:T01",
+      "U01:T02",
+      "U01:T03",
+      "U01:T04",
+      "U01:T05"
+    ],
+    "finish_time_min": 135,
+    "swaps_used": 4,
+    "drone_active_time_min": 115,
+    "vehicle_travel_time_min": 50,
+    "current_soc_pct": 40,
+    "runtime_ms": 6.077,
+    "expanded_labels": 294,
+    "generated_labels": 294,
+    "validation_passed": true,
+    "validation_check_count": 114,
+    "output_directory": "h135_b05"
+  },
+  {
+    "experiment_id": "h150_b02",
+    "time_horizon_min": 150,
+    "spare_battery_sets": 2,
+    "allow_reverse": false,
+    "status": "INFEASIBLE_ALL_TASKS_BEST_PARTIAL_RETURNED",
+    "feasible": false,
+    "solution_kind": "BEST_PARTIAL",
+    "total_task_count": 5,
+    "completed_task_count": 3,
+    "completion_rate_pct": 60.0,
+    "completed_task_ids": [
+      "T01",
+      "T03",
+      "T04"
+    ],
+    "uncompleted_task_ids": [
+      "T02",
+      "T05"
+    ],
+    "uav_task_mapping": [
+      "U01:T01",
+      "U01:T03",
+      "U01:T04"
+    ],
+    "finish_time_min": 95,
+    "swaps_used": 2,
+    "drone_active_time_min": 60,
+    "vehicle_travel_time_min": 50,
+    "current_soc_pct": 40,
+    "runtime_ms": 4.344,
+    "expanded_labels": 217,
+    "generated_labels": 217,
+    "validation_passed": true,
+    "validation_check_count": 84,
+    "output_directory": "h150_b02"
+  },
+  {
+    "experiment_id": "h150_b03",
+    "time_horizon_min": 150,
+    "spare_battery_sets": 3,
+    "allow_reverse": false,
+    "status": "INFEASIBLE_ALL_TASKS_BEST_PARTIAL_RETURNED",
+    "feasible": false,
+    "solution_kind": "BEST_PARTIAL",
+    "total_task_count": 5,
+    "completed_task_count": 4,
+    "completion_rate_pct": 80.0,
+    "completed_task_ids": [
+      "T01",
+      "T02",
+      "T03",
+      "T04"
+    ],
+    "uncompleted_task_ids": [
+      "T05"
+    ],
+    "uav_task_mapping": [
+      "U01:T01",
+      "U01:T02",
+      "U01:T03",
+      "U01:T04"
+    ],
+    "finish_time_min": 115,
+    "swaps_used": 3,
+    "drone_active_time_min": 90,
+    "vehicle_travel_time_min": 50,
+    "current_soc_pct": 40,
+    "runtime_ms": 6.758,
+    "expanded_labels": 277,
+    "generated_labels": 277,
+    "validation_passed": true,
+    "validation_check_count": 98,
+    "output_directory": "h150_b03"
+  },
+  {
+    "experiment_id": "h150_b04",
+    "time_horizon_min": 150,
+    "spare_battery_sets": 4,
+    "allow_reverse": false,
+    "status": "FEASIBLE_OPTIMAL",
+    "feasible": true,
+    "solution_kind": "FULL",
+    "total_task_count": 5,
+    "completed_task_count": 5,
+    "completion_rate_pct": 100.0,
+    "completed_task_ids": [
+      "T01",
+      "T02",
+      "T03",
+      "T04",
+      "T05"
+    ],
+    "uncompleted_task_ids": [],
+    "uav_task_mapping": [
+      "U01:T01",
+      "U01:T02",
+      "U01:T03",
+      "U01:T04",
+      "U01:T05"
+    ],
+    "finish_time_min": 135,
+    "swaps_used": 4,
+    "drone_active_time_min": 115,
+    "vehicle_travel_time_min": 50,
+    "current_soc_pct": 40,
+    "runtime_ms": 5.601,
+    "expanded_labels": 294,
+    "generated_labels": 298,
+    "validation_passed": true,
+    "validation_check_count": 114,
+    "output_directory": "h150_b04"
+  },
+  {
+    "experiment_id": "h150_b05",
+    "time_horizon_min": 150,
+    "spare_battery_sets": 5,
+    "allow_reverse": false,
+    "status": "FEASIBLE_OPTIMAL",
+    "feasible": true,
+    "solution_kind": "FULL",
+    "total_task_count": 5,
+    "completed_task_count": 5,
+    "completion_rate_pct": 100.0,
+    "completed_task_ids": [
+      "T01",
+      "T02",
+      "T03",
+      "T04",
+      "T05"
+    ],
+    "uncompleted_task_ids": [],
+    "uav_task_mapping": [
+      "U01:T01",
+      "U01:T02",
+      "U01:T03",
+      "U01:T04",
+      "U01:T05"
+    ],
+    "finish_time_min": 135,
+    "swaps_used": 4,
+    "drone_active_time_min": 115,
+    "vehicle_travel_time_min": 50,
+    "current_soc_pct": 40,
+    "runtime_ms": 6.141,
+    "expanded_labels": 294,
+    "generated_labels": 299,
+    "validation_passed": true,
+    "validation_check_count": 114,
+    "output_directory": "h150_b05"
+  }
+]

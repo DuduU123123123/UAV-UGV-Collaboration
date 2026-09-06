@@ -17,6 +17,7 @@ import math
 from dataclasses import dataclass
 from itertools import count
 from pathlib import Path
+from time import perf_counter
 from typing import Any, Iterable
 
 
@@ -45,6 +46,7 @@ class Context:
     soc_step: int
     reserve_soc: int
     initial_soc: int
+    uav_id: str
     spare_batteries: int
     nest_speed_kmh: float
     uav_speed_mps: float
@@ -79,6 +81,23 @@ def load_instance(path: Path) -> dict[str, Any]:
         base_data["metadata"]["scenario_notes"] = data.get("notes", "")
         return base_data
     return data
+
+
+def apply_time_horizon_override(data: dict[str, Any], new_horizon: int) -> None:
+    """统一修改总时域、车辆班次结束时间及原本贴近总时域的任务截止时间。"""
+    parameters = data["parameters"]
+    old_horizon = int(parameters["time_horizon_min"])
+    time_step = int(parameters["time_step_min"])
+    if new_horizon <= 0 or new_horizon % time_step:
+        raise ValueError("覆盖时间范围必须为正且能被时间步长整除")
+
+    parameters["time_horizon_min"] = new_horizon
+    for nest in data["resources"]["mobile_nests"]:
+        if int(nest["shift_end_min"]) == old_horizon:
+            nest["shift_end_min"] = new_horizon
+    for task in data["tasks"]:
+        if int(task["latest_finish_min"]) == old_horizon:
+            task["latest_finish_min"] = new_horizon
 
 
 def validate_instance(data: dict[str, Any]) -> None:
@@ -196,6 +215,7 @@ def build_context(
         soc_step=soc_step,
         reserve_soc=int(uav["minimum_reserve_soc_pct"]),
         initial_soc=int(uav["initial_soc_pct"]),
+        uav_id=str(uav["uav_id"]),
         spare_batteries=spare_batteries,
         nest_speed_kmh=nest_speed_kmh,
         uav_speed_mps=float(uav["operational_speed_mps"]),
@@ -246,6 +266,7 @@ def generate_transitions(ctx: Context, state: State) -> Iterable[tuple[State, di
             next_state = State(end_time, next_index, state.soc_pct, state.completed_mask, state.swaps_used)
             action = {
                 "type": "vehicle_move_with_uav_onboard",
+                "uav_id": ctx.uav_id,
                 "start_min": state.time_min,
                 "end_min": end_time,
                 "nest_from": station["location_id"],
@@ -253,6 +274,9 @@ def generate_transitions(ctx: Context, state: State) -> Iterable[tuple[State, di
                 "vehicle_distance_m": vehicle_path_distance(ctx, state.station_index, next_index),
                 "soc_before_pct": state.soc_pct,
                 "soc_after_pct": state.soc_pct,
+                "current_soc_pct": state.soc_pct,
+                "swaps_used_before": state.swaps_used,
+                "swaps_used_after": state.swaps_used,
             }
             yield next_state, action, 0, duration
 
@@ -263,12 +287,15 @@ def generate_transitions(ctx: Context, state: State) -> Iterable[tuple[State, di
             next_state = State(end_time, state.station_index, ctx.initial_soc, state.completed_mask, state.swaps_used + 1)
             action = {
                 "type": "battery_swap",
+                "uav_id": ctx.uav_id,
                 "start_min": state.time_min,
                 "end_min": end_time,
                 "nest_from": station["location_id"],
                 "nest_to": station["location_id"],
                 "soc_before_pct": state.soc_pct,
                 "soc_after_pct": ctx.initial_soc,
+                "current_soc_pct": ctx.initial_soc,
+                "swaps_used_before": state.swaps_used,
                 "swaps_used_after": state.swaps_used + 1,
             }
             yield next_state, action, 0, 0
@@ -321,6 +348,7 @@ def generate_transitions(ctx: Context, state: State) -> Iterable[tuple[State, di
             )
             action = {
                 "type": "joint_sortie_service",
+                "uav_id": ctx.uav_id,
                 "task_id": task["task_id"],
                 "task_type": task["task_type"],
                 "start_min": state.time_min,
@@ -337,6 +365,9 @@ def generate_transitions(ctx: Context, state: State) -> Iterable[tuple[State, di
                 "soc_before_pct": state.soc_pct,
                 "soc_drop_pct": energy_drop,
                 "soc_after_pct": next_soc,
+                "current_soc_pct": next_soc,
+                "swaps_used_before": state.swaps_used,
+                "swaps_used_after": state.swaps_used,
                 "implicit_wait_min": max(0, service_start - state.time_min - outbound_min),
             }
             yield next_state, action, joint_duration, nest_duration
@@ -358,6 +389,7 @@ def reconstruct_actions(
 
 
 def solve(ctx: Context, max_labels: int = 500_000) -> dict[str, Any]:
+    solve_start = perf_counter()
     all_tasks_mask = (1 << len(ctx.tasks)) - 1
     start = State(0, ctx.start_index, ctx.initial_soc, 0, 0)
     # 目标按完工时间、换电次数、无人机活动时间、车辆运行时间依次最小化。
@@ -433,10 +465,47 @@ def solve(ctx: Context, max_labels: int = 500_000) -> dict[str, Any]:
         for index, task in enumerate(ctx.tasks)
         if finish.completed_mask & (1 << index)
     ]
+    uncompleted_task_ids = [
+        task["task_id"] for task in ctx.tasks if task["task_id"] not in completed_task_ids
+    ]
+    total_task_count = len(ctx.tasks)
+    completed_task_count = len(completed_task_ids)
+    completion_rate_pct = round(completed_task_count / total_task_count * 100, 2)
+    uav_task_assignments = [
+        {
+            "uav_id": action["uav_id"],
+            "task_id": action["task_id"],
+            "task_type": action["task_type"],
+            "sortie_start_min": action["start_min"],
+            "service_start_min": action["service_start_min"],
+            "service_end_min": action["service_end_min"],
+            "sortie_end_min": action["end_min"],
+            "launch_station_id": action["uav_launch"],
+            "recovery_station_id": action["uav_recovery"],
+            "soc_before_pct": action["soc_before_pct"],
+            "soc_after_pct": action["soc_after_pct"],
+            "swaps_used_after": action["swaps_used_after"],
+        }
+        for action in actions
+        if action["type"] == "joint_sortie_service"
+    ]
     finish_cost = cost_by_state[finish]
+    solve_runtime_ms = round((perf_counter() - solve_start) * 1000, 3)
+    metadata = ctx.data.get("metadata", {})
+    scenario_id = metadata.get("scenario_id", metadata.get("instance_id", ""))
     return {
+        "run_config": {
+            "scenario_id": scenario_id,
+            "time_horizon_min": ctx.horizon,
+            "time_step_min": ctx.time_step,
+            "spare_battery_sets": ctx.spare_batteries,
+            "allow_reverse": ctx.allow_reverse,
+            "total_task_count": total_task_count,
+            "uav_ids": [ctx.uav_id],
+        },
         "status": "FEASIBLE_OPTIMAL" if goal is not None else "INFEASIBLE_ALL_TASKS_BEST_PARTIAL_RETURNED",
         "feasible": goal is not None,
+        "solution_kind": "FULL" if goal is not None else "BEST_PARTIAL",
         "objective": {
             "finish_time_min": finish.time_min,
             "swaps_used": finish.swaps_used,
@@ -444,14 +513,34 @@ def solve(ctx: Context, max_labels: int = 500_000) -> dict[str, Any]:
             "vehicle_travel_time_min": finish_cost[3],
         },
         "completed_task_ids": completed_task_ids,
-        "uncompleted_task_ids": [task["task_id"] for task in ctx.tasks if task["task_id"] not in completed_task_ids],
+        "uncompleted_task_ids": uncompleted_task_ids,
+        "task_result": {
+            "total_task_count": total_task_count,
+            "completed_task_count": completed_task_count,
+            "completion_rate_pct": completion_rate_pct,
+            "completed_task_ids": completed_task_ids,
+            "uncompleted_task_ids": uncompleted_task_ids,
+        },
+        "uav_task_assignments": uav_task_assignments,
+        "uav_results": [
+            {
+                "uav_id": ctx.uav_id,
+                "completed_task_count": completed_task_count,
+                "completed_task_ids": completed_task_ids,
+                "swaps_used": finish.swaps_used,
+                "current_soc_pct": finish.soc_pct,
+            }
+        ],
         "final_state": {
             "time_min": finish.time_min,
             "station_id": ctx.stations[finish.station_index]["location_id"],
             "station_name": ctx.stations[finish.station_index]["name"],
             "soc_pct": finish.soc_pct,
+            "current_soc_pct": finish.soc_pct,
             "swaps_used": finish.swaps_used,
+            "cumulative_swaps_used": finish.swaps_used,
         },
+        "runtime_ms": solve_runtime_ms,
         "actions": actions,
         "search_statistics": {
             "expanded_labels": expanded,
@@ -461,9 +550,123 @@ def solve(ctx: Context, max_labels: int = 500_000) -> dict[str, Any]:
         "effective_parameters": {
             "spare_battery_sets": ctx.spare_batteries,
             "allow_reverse": ctx.allow_reverse,
+            "time_horizon_min": ctx.horizon,
             "time_step_min": ctx.time_step,
             "soc_step_pct": ctx.soc_step,
+            "uav_id": ctx.uav_id,
         },
+    }
+
+
+def validate_result(ctx: Context, result: dict[str, Any]) -> dict[str, Any]:
+    """检查输出方案自身是否满足时间、任务、能量和换电一致性。"""
+    violations: list[str] = []
+    check_count = 0
+
+    def require(condition: bool, message: str) -> None:
+        nonlocal check_count
+        check_count += 1
+        if not condition:
+            violations.append(message)
+
+    actions = result["actions"]
+    task_by_id = {task["task_id"]: task for task in ctx.tasks}
+    known_uav_ids = {
+        str(uav["uav_id"])
+        for uav in ctx.data["resources"]["uavs"]
+    }
+    service_task_ids: list[str] = []
+    previous_end = 0
+    current_soc = ctx.initial_soc
+    current_swaps = 0
+
+    for step, action in enumerate(actions, start=1):
+        prefix = f"动作{step}"
+        start_min = int(action["start_min"])
+        end_min = int(action["end_min"])
+        soc_before = int(action["soc_before_pct"])
+        soc_after = int(action["soc_after_pct"])
+        swaps_before = int(action["swaps_used_before"])
+        swaps_after = int(action["swaps_used_after"])
+
+        require(start_min == previous_end, f"{prefix}开始时间与上一动作结束时间不连续")
+        require(end_min >= start_min, f"{prefix}结束时间早于开始时间")
+        require(action["uav_id"] in known_uav_ids, f"{prefix}引用未知无人机{action['uav_id']}")
+        require(soc_before == current_soc, f"{prefix}动作前SOC与上一动作后SOC不一致")
+        require(soc_after == int(action["current_soc_pct"]), f"{prefix}当前电量与动作后SOC不一致")
+        require(ctx.reserve_soc <= soc_after <= ctx.initial_soc, f"{prefix}动作后SOC超出允许范围")
+        require(swaps_before == current_swaps, f"{prefix}动作前换电次数与累计值不一致")
+
+        if action["type"] == "battery_swap":
+            require(swaps_after == swaps_before + 1, f"{prefix}换电动作没有使累计次数增加1")
+            require(soc_after == ctx.initial_soc, f"{prefix}换电后SOC没有恢复到初始值")
+        else:
+            require(swaps_after == swaps_before, f"{prefix}非换电动作改变了累计换电次数")
+
+        if action["type"] == "joint_sortie_service":
+            task_id = action["task_id"]
+            require(task_id in task_by_id, f"{prefix}引用未知任务{task_id}")
+            if task_id in task_by_id:
+                task = task_by_id[task_id]
+                require(task_id not in service_task_ids, f"任务{task_id}被重复完成")
+                require(
+                    int(action["service_start_min"]) >= int(task["earliest_start_min"]),
+                    f"任务{task_id}早于时间窗开始服务",
+                )
+                require(
+                    int(action["service_end_min"]) <= int(task["latest_finish_min"]),
+                    f"任务{task_id}晚于时间窗完成",
+                )
+                require(
+                    start_min <= int(action["service_start_min"])
+                    <= int(action["service_end_min"])
+                    <= end_min,
+                    f"任务{task_id}服务时间不在出动时间范围内",
+                )
+            service_task_ids.append(task_id)
+
+        previous_end = end_min
+        current_soc = soc_after
+        current_swaps = swaps_after
+
+    completed_task_ids = result["completed_task_ids"]
+    assignments = result["uav_task_assignments"]
+    assignment_pairs = [(row["uav_id"], row["task_id"]) for row in assignments]
+    service_pairs = [
+        (action["uav_id"], action["task_id"])
+        for action in actions
+        if action["type"] == "joint_sortie_service"
+    ]
+
+    require(set(service_task_ids) == set(completed_task_ids), "服务动作与已完成任务集合不一致")
+    require(assignment_pairs == service_pairs, "无人机—任务对应关系与服务动作不一致")
+    require(current_swaps <= ctx.spare_batteries, "累计换电次数超过备用电池数量")
+    require(result["objective"]["swaps_used"] == current_swaps, "目标中的换电次数与动作累计值不一致")
+    require(result["final_state"]["cumulative_swaps_used"] == current_swaps, "最终状态换电次数与动作累计值不一致")
+    require(result["final_state"]["current_soc_pct"] == current_soc, "最终状态当前电量与最后动作不一致")
+    require(result["final_state"]["time_min"] == previous_end, "最终状态时间与最后动作结束时间不一致")
+    require(result["objective"]["finish_time_min"] == previous_end, "目标完工时间与最后动作结束时间不一致")
+    require(previous_end <= ctx.horizon, "方案结束时间超过总时间窗口")
+    require(
+        result["task_result"]["completed_task_count"] == len(completed_task_ids),
+        "任务汇总中的完成数量不一致",
+    )
+    require(
+        result["task_result"]["total_task_count"] == len(ctx.tasks),
+        "任务汇总中的总任务数不一致",
+    )
+
+    if result["feasible"]:
+        require(len(completed_task_ids) == len(ctx.tasks), "完整可行解没有完成全部任务")
+        require(
+            result["final_state"]["station_id"] == ctx.stations[ctx.end_index]["location_id"],
+            "完整可行解没有到达指定终点",
+        )
+
+    return {
+        "passed": not violations,
+        "check_count": check_count,
+        "violations": violations,
     }
 
 
@@ -499,15 +702,29 @@ def write_outputs(result: dict[str, Any], output_dir: Path) -> None:
     fieldnames = [
         "step",
         "type",
+        "uav_id",
         "start_min",
         "end_min",
+        "duration_min",
         "nest_from",
         "nest_to",
         "task_id",
+        "task_type",
+        "uav_launch",
+        "uav_recovery",
         "service_start_min",
         "service_end_min",
+        "flight_distance_m",
+        "vehicle_distance_m",
+        "drone_active_min",
+        "vehicle_travel_min",
         "soc_before_pct",
+        "soc_drop_pct",
         "soc_after_pct",
+        "current_soc_pct",
+        "swaps_used_before",
+        "swaps_used_after",
+        "implicit_wait_min",
         "details_json",
     ]
     with timeline_path.open("w", encoding="utf-8-sig", newline="") as handle:
@@ -518,15 +735,29 @@ def write_outputs(result: dict[str, Any], output_dir: Path) -> None:
                 {
                     "step": index,
                     "type": action.get("type", ""),
+                    "uav_id": action.get("uav_id", ""),
                     "start_min": action.get("start_min", ""),
                     "end_min": action.get("end_min", ""),
+                    "duration_min": action.get("end_min", 0) - action.get("start_min", 0),
                     "nest_from": action.get("nest_from", ""),
                     "nest_to": action.get("nest_to", ""),
                     "task_id": action.get("task_id", ""),
+                    "task_type": action.get("task_type", ""),
+                    "uav_launch": action.get("uav_launch", ""),
+                    "uav_recovery": action.get("uav_recovery", ""),
                     "service_start_min": action.get("service_start_min", ""),
                     "service_end_min": action.get("service_end_min", ""),
+                    "flight_distance_m": action.get("flight_distance_m", ""),
+                    "vehicle_distance_m": action.get("vehicle_distance_m", ""),
+                    "drone_active_min": action.get("drone_active_min", ""),
+                    "vehicle_travel_min": action.get("vehicle_travel_min", ""),
                     "soc_before_pct": action.get("soc_before_pct", ""),
+                    "soc_drop_pct": action.get("soc_drop_pct", ""),
                     "soc_after_pct": action.get("soc_after_pct", ""),
+                    "current_soc_pct": action.get("current_soc_pct", ""),
+                    "swaps_used_before": action.get("swaps_used_before", ""),
+                    "swaps_used_after": action.get("swaps_used_after", ""),
+                    "implicit_wait_min": action.get("implicit_wait_min", ""),
                     "details_json": json.dumps(action, ensure_ascii=False, separators=(",", ":")),
                 }
             )
@@ -548,6 +779,7 @@ def parse_args() -> argparse.Namespace:
         help="结果目录",
     )
     parser.add_argument("--spare-batteries", type=int, default=None, help="覆盖数据中的备用电池组数")
+    parser.add_argument("--time-horizon", type=int, default=None, help="覆盖总时间窗口，并同步调整班次及贴近原时域的任务截止时间")
     parser.add_argument("--allow-reverse", action="store_true", help="允许移动机巢反向运行")
     parser.add_argument("--diagnose-max-spares", type=int, default=6, help="无解时将备用电池敏感性检查到该数值")
     parser.add_argument("--max-labels", type=int, default=500_000, help="最大状态标签数")
@@ -557,12 +789,15 @@ def parse_args() -> argparse.Namespace:
 def main() -> int:
     args = parse_args()
     data = load_instance(args.input)
+    if args.time_horizon is not None:
+        apply_time_horizon_override(data, args.time_horizon)
     context = build_context(
         data,
         spare_batteries_override=args.spare_batteries,
         allow_reverse=args.allow_reverse,
     )
     result = solve(context, max_labels=args.max_labels)
+    result["validation"] = validate_result(context, result)
     if not result["feasible"] and args.diagnose_max_spares >= context.spare_batteries:
         result["battery_sensitivity"] = find_minimum_spares(
             data,

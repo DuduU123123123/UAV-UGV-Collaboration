@@ -1,0 +1,7 @@
+**/__pycache__/
+*.py[cod]
+**/node_modules/
+**/review_stage*/
+**/*.inspect.ndjson
+**/experiments/*_preview.png
+**/~$*.xlsx

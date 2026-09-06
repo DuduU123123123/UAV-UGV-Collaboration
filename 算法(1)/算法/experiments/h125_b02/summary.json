@@ -1,0 +1,260 @@
+{
+  "run_config": {
+    "scenario_id": "changping_min_v1",
+    "time_horizon_min": 125,
+    "time_step_min": 5,
+    "spare_battery_sets": 2,
+    "allow_reverse": false,
+    "total_task_count": 5,
+    "uav_ids": [
+      "U01"
+    ],
+    "deadline_adjustment_policy": "同步调整原本等于基础原总时域的任务截止时间"
+  },
+  "status": "INFEASIBLE_ALL_TASKS_BEST_PARTIAL_RETURNED",
+  "feasible": false,
+  "solution_kind": "BEST_PARTIAL",
+  "objective": {
+    "finish_time_min": 95,
+    "swaps_used": 2,
+    "drone_active_time_min": 60,
+    "vehicle_travel_time_min": 50
+  },
+  "completed_task_ids": [
+    "T01",
+    "T03",
+    "T04"
+  ],
+  "uncompleted_task_ids": [
+    "T02",
+    "T05"
+  ],
+  "task_result": {
+    "total_task_count": 5,
+    "completed_task_count": 3,
+    "completion_rate_pct": 60.0,
+    "completed_task_ids": [
+      "T01",
+      "T03",
+      "T04"
+    ],
+    "uncompleted_task_ids": [
+      "T02",
+      "T05"
+    ]
+  },
+  "uav_task_assignments": [
+    {
+      "uav_id": "U01",
+      "task_id": "T01",
+      "task_type": "轨面与异物巡检",
+      "sortie_start_min": 0,
+      "service_start_min": 5,
+      "service_end_min": 10,
+      "sortie_end_min": 15,
+      "launch_station_id": "S01",
+      "recovery_station_id": "S02",
+      "soc_before_pct": 100,
+      "soc_after_pct": 60,
+      "swaps_used_after": 0
+    },
+    {
+      "uav_id": "U01",
+      "task_id": "T03",
+      "task_type": "接触轨与供电设备巡检",
+      "sortie_start_min": 35,
+      "service_start_min": 45,
+      "service_end_min": 50,
+      "sortie_end_min": 60,
+      "launch_station_id": "S03",
+      "recovery_station_id": "S04",
+      "soc_before_pct": 100,
+      "soc_after_pct": 40,
+      "swaps_used_after": 1
+    },
+    {
+      "uav_id": "U01",
+      "task_id": "T04",
+      "task_type": "渗漏水巡检",
+      "sortie_start_min": 65,
+      "service_start_min": 70,
+      "service_end_min": 80,
+      "sortie_end_min": 85,
+      "launch_station_id": "S04",
+      "recovery_station_id": "S05",
+      "soc_before_pct": 100,
+      "soc_after_pct": 40,
+      "swaps_used_after": 2
+    }
+  ],
+  "uav_results": [
+    {
+      "uav_id": "U01",
+      "completed_task_count": 3,
+      "completed_task_ids": [
+        "T01",
+        "T03",
+        "T04"
+      ],
+      "swaps_used": 2,
+      "current_soc_pct": 40
+    }
+  ],
+  "final_state": {
+    "time_min": 95,
+    "station_id": "S06",
+    "station_name": "南邵",
+    "soc_pct": 40,
+    "current_soc_pct": 40,
+    "swaps_used": 2,
+    "cumulative_swaps_used": 2
+  },
+  "runtime_ms": 4.482,
+  "actions": [
+    {
+      "type": "joint_sortie_service",
+      "uav_id": "U01",
+      "task_id": "T01",
+      "task_type": "轨面与异物巡检",
+      "start_min": 0,
+      "end_min": 15,
+      "service_start_min": 5,
+      "service_end_min": 10,
+      "nest_from": "S01",
+      "nest_to": "S02",
+      "uav_launch": "S01",
+      "uav_recovery": "S02",
+      "flight_distance_m": 1213.0,
+      "drone_active_min": 15,
+      "vehicle_travel_min": 5,
+      "soc_before_pct": 100,
+      "soc_drop_pct": 40,
+      "soc_after_pct": 60,
+      "current_soc_pct": 60,
+      "swaps_used_before": 0,
+      "swaps_used_after": 0,
+      "implicit_wait_min": 0
+    },
+    {
+      "type": "battery_swap",
+      "uav_id": "U01",
+      "start_min": 15,
+      "end_min": 20,
+      "nest_from": "S02",
+      "nest_to": "S02",
+      "soc_before_pct": 60,
+      "soc_after_pct": 100,
+      "current_soc_pct": 100,
+      "swaps_used_before": 0,
+      "swaps_used_after": 1
+    },
+    {
+      "type": "vehicle_move_with_uav_onboard",
+      "uav_id": "U01",
+      "start_min": 20,
+      "end_min": 35,
+      "nest_from": "S02",
+      "nest_to": "S03",
+      "vehicle_distance_m": 3509,
+      "soc_before_pct": 100,
+      "soc_after_pct": 100,
+      "current_soc_pct": 100,
+      "swaps_used_before": 1,
+      "swaps_used_after": 1
+    },
+    {
+      "type": "joint_sortie_service",
+      "uav_id": "U01",
+      "task_id": "T03",
+      "task_type": "接触轨与供电设备巡检",
+      "start_min": 35,
+      "end_min": 60,
+      "service_start_min": 45,
+      "service_end_min": 50,
+      "nest_from": "S03",
+      "nest_to": "S04",
+      "uav_launch": "S03",
+      "uav_recovery": "S04",
+      "flight_distance_m": 2433.0,
+      "drone_active_min": 25,
+      "vehicle_travel_min": 10,
+      "soc_before_pct": 100,
+      "soc_drop_pct": 60,
+      "soc_after_pct": 40,
+      "current_soc_pct": 40,
+      "swaps_used_before": 1,
+      "swaps_used_after": 1,
+      "implicit_wait_min": 0
+    },
+    {
+      "type": "battery_swap",
+      "uav_id": "U01",
+      "start_min": 60,
+      "end_min": 65,
+      "nest_from": "S04",
+      "nest_to": "S04",
+      "soc_before_pct": 40,
+      "soc_after_pct": 100,
+      "current_soc_pct": 100,
+      "swaps_used_before": 1,
+      "swaps_used_after": 2
+    },
+    {
+      "type": "joint_sortie_service",
+      "uav_id": "U01",
+      "task_id": "T04",
+      "task_type": "渗漏水巡检",
+      "start_min": 65,
+      "end_min": 85,
+      "service_start_min": 70,
+      "service_end_min": 80,
+      "nest_from": "S04",
+      "nest_to": "S05",
+      "uav_launch": "S04",
+      "uav_recovery": "S05",
+      "flight_distance_m": 1683.0,
+      "drone_active_min": 20,
+      "vehicle_travel_min": 10,
+      "soc_before_pct": 100,
+      "soc_drop_pct": 60,
+      "soc_after_pct": 40,
+      "current_soc_pct": 40,
+      "swaps_used_before": 2,
+      "swaps_used_after": 2,
+      "implicit_wait_min": 0
+    },
+    {
+      "type": "vehicle_move_with_uav_onboard",
+      "uav_id": "U01",
+      "start_min": 85,
+      "end_min": 95,
+      "nest_from": "S05",
+      "nest_to": "S06",
+      "vehicle_distance_m": 1959,
+      "soc_before_pct": 40,
+      "soc_after_pct": 40,
+      "current_soc_pct": 40,
+      "swaps_used_before": 2,
+      "swaps_used_after": 2
+    }
+  ],
+  "search_statistics": {
+    "expanded_labels": 217,
+    "generated_labels": 217,
+    "retained_state_cores": 217
+  },
+  "effective_parameters": {
+    "spare_battery_sets": 2,
+    "allow_reverse": false,
+    "time_horizon_min": 125,
+    "time_step_min": 5,
+    "soc_step_pct": 20,
+    "uav_id": "U01"
+  },
+  "experiment_id": "h125_b02",
+  "validation": {
+    "passed": true,
+    "check_count": 84,
+    "violations": []
+  }
+}
