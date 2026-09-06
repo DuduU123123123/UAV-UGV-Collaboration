@@ -1,0 +1,85 @@
+{
+  "metadata": {
+    "instance_id": "changping_min_v1",
+    "created_on": "2026-09-05",
+    "city": "北京",
+    "line": "昌平线",
+    "corridor": "昌平西山口—南邵",
+    "purpose": "无人机—自走式机巢协同地铁巡检调度模型的最小可行性实验",
+    "source_files": [
+      "D:/大创-智能车与无人机/无人车机地铁巡检项目训练/data/raw/Beijing_Subway/station.json",
+      "D:/大创-智能车与无人机/无人车机地铁巡检项目训练/data/raw/Beijing_Subway/route.json"
+    ],
+    "provenance": {
+      "stations_segments_distances": "raw_data",
+      "tasks_time_windows_resources": "synthetic_test_assumptions"
+    }
+  },
+  "parameters": {
+    "time_horizon_min": 120,
+    "time_step_min": 5,
+    "soc_levels_pct": [20, 40, 60, 80, 100],
+    "minimum_reserve_soc_pct": 20,
+    "all_tasks_mandatory": true,
+    "one_task_per_sortie": true
+  },
+  "stations": [
+    {"location_id": "S01", "source_station_id": 305, "name": "昌平西山口", "order": 1, "chainage_m": 0, "vehicle_accessible": true, "uav_accessible": true},
+    {"location_id": "S02", "source_station_id": 304, "name": "十三陵景区", "order": 2, "chainage_m": 1213, "vehicle_accessible": true, "uav_accessible": true},
+    {"location_id": "S03", "source_station_id": 306, "name": "昌平", "order": 3, "chainage_m": 4722, "vehicle_accessible": true, "uav_accessible": true},
+    {"location_id": "S04", "source_station_id": 307, "name": "昌平东关", "order": 4, "chainage_m": 7155, "vehicle_accessible": true, "uav_accessible": true},
+    {"location_id": "S05", "source_station_id": 308, "name": "北邵洼", "order": 5, "chainage_m": 8838, "vehicle_accessible": true, "uav_accessible": true},
+    {"location_id": "S06", "source_station_id": 309, "name": "南邵", "order": 6, "chainage_m": 10797, "vehicle_accessible": true, "uav_accessible": true}
+  ],
+  "segments": [
+    {"segment_id": "E01", "from_location_id": "S01", "to_location_id": "S02", "distance_m": 1213, "forward_source_route_id": 1486, "reverse_source_route_id": 694},
+    {"segment_id": "E02", "from_location_id": "S02", "to_location_id": "S03", "distance_m": 3509, "forward_source_route_id": 1487, "reverse_source_route_id": 695},
+    {"segment_id": "E03", "from_location_id": "S03", "to_location_id": "S04", "distance_m": 2433, "forward_source_route_id": 1488, "reverse_source_route_id": 696},
+    {"segment_id": "E04", "from_location_id": "S04", "to_location_id": "S05", "distance_m": 1683, "forward_source_route_id": 1489, "reverse_source_route_id": 697},
+    {"segment_id": "E05", "from_location_id": "S05", "to_location_id": "S06", "distance_m": 1959, "forward_source_route_id": 1490, "reverse_source_route_id": 698}
+  ],
+  "directed_vehicle_arcs": [
+    {"arc_id": "A01F", "segment_id": "E01", "from_location_id": "S01", "to_location_id": "S02", "distance_m": 1213, "source_route_id": 1486},
+    {"arc_id": "A01R", "segment_id": "E01", "from_location_id": "S02", "to_location_id": "S01", "distance_m": 1213, "source_route_id": 694},
+    {"arc_id": "A02F", "segment_id": "E02", "from_location_id": "S02", "to_location_id": "S03", "distance_m": 3509, "source_route_id": 1487},
+    {"arc_id": "A02R", "segment_id": "E02", "from_location_id": "S03", "to_location_id": "S02", "distance_m": 3509, "source_route_id": 695},
+    {"arc_id": "A03F", "segment_id": "E03", "from_location_id": "S03", "to_location_id": "S04", "distance_m": 2433, "source_route_id": 1488},
+    {"arc_id": "A03R", "segment_id": "E03", "from_location_id": "S04", "to_location_id": "S03", "distance_m": 2433, "source_route_id": 696},
+    {"arc_id": "A04F", "segment_id": "E04", "from_location_id": "S04", "to_location_id": "S05", "distance_m": 1683, "source_route_id": 1489},
+    {"arc_id": "A04R", "segment_id": "E04", "from_location_id": "S05", "to_location_id": "S04", "distance_m": 1683, "source_route_id": 697},
+    {"arc_id": "A05F", "segment_id": "E05", "from_location_id": "S05", "to_location_id": "S06", "distance_m": 1959, "source_route_id": 1490},
+    {"arc_id": "A05R", "segment_id": "E05", "from_location_id": "S06", "to_location_id": "S05", "distance_m": 1959, "source_route_id": 698}
+  ],
+  "task_locations": [
+    {"location_id": "Q01", "segment_id": "E01", "position_ratio": 0.5, "chainage_m": 606.5, "adjacent_station_ids": ["S01", "S02"], "vehicle_accessible": false, "uav_accessible": true},
+    {"location_id": "Q02", "segment_id": "E02", "position_ratio": 0.5, "chainage_m": 2967.5, "adjacent_station_ids": ["S02", "S03"], "vehicle_accessible": false, "uav_accessible": true},
+    {"location_id": "Q03", "segment_id": "E03", "position_ratio": 0.5, "chainage_m": 5938.5, "adjacent_station_ids": ["S03", "S04"], "vehicle_accessible": false, "uav_accessible": true},
+    {"location_id": "Q04", "segment_id": "E04", "position_ratio": 0.5, "chainage_m": 7996.5, "adjacent_station_ids": ["S04", "S05"], "vehicle_accessible": false, "uav_accessible": true},
+    {"location_id": "Q05", "segment_id": "E05", "position_ratio": 0.5, "chainage_m": 9817.5, "adjacent_station_ids": ["S05", "S06"], "vehicle_accessible": false, "uav_accessible": true}
+  ],
+  "tasks": [
+    {"task_id": "T01", "location_id": "Q01", "task_type": "轨面与异物巡检", "service_time_min": 5, "earliest_start_min": 0, "latest_finish_min": 60, "priority_weight": 3, "mandatory": true},
+    {"task_id": "T02", "location_id": "Q02", "task_type": "隧道衬砌裂缝巡检", "service_time_min": 10, "earliest_start_min": 0, "latest_finish_min": 90, "priority_weight": 2, "mandatory": true},
+    {"task_id": "T03", "location_id": "Q03", "task_type": "接触轨与供电设备巡检", "service_time_min": 5, "earliest_start_min": 20, "latest_finish_min": 100, "priority_weight": 3, "mandatory": true},
+    {"task_id": "T04", "location_id": "Q04", "task_type": "渗漏水巡检", "service_time_min": 10, "earliest_start_min": 30, "latest_finish_min": 120, "priority_weight": 2, "mandatory": true},
+    {"task_id": "T05", "location_id": "Q05", "task_type": "扣件与紧固件巡检", "service_time_min": 5, "earliest_start_min": 0, "latest_finish_min": 120, "priority_weight": 1, "mandatory": true}
+  ],
+  "resources": {
+    "mobile_nests": [
+      {"nest_id": "B01", "start_location_id": "S01", "end_location_id": "S06", "shift_start_min": 0, "shift_end_min": 120, "speed_kmh": 15, "uav_capacity": 1, "spare_battery_sets": 2}
+    ],
+    "uavs": [
+      {"uav_id": "U01", "assigned_nest_id": "B01", "operational_speed_mps": 3, "initial_soc_pct": 100, "minimum_reserve_soc_pct": 20, "usable_endurance_min": 35, "battery_swap_time_min": 5}
+    ]
+  },
+  "validation_summary": {
+    "station_count": 6,
+    "undirected_segment_count": 5,
+    "directed_vehicle_arc_count": 10,
+    "task_count": 5,
+    "total_corridor_distance_m": 10797,
+    "connected_path": true,
+    "forward_reverse_distance_consistent": true,
+    "all_task_windows_within_horizon": true
+  }
+}

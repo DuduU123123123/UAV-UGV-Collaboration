@@ -1,0 +1,6 @@
+{
+  "scenario_id": "changping_feasible_demo_v1",
+  "base_instance": "changping_min_instance.json",
+  "task_ids": ["T01", "T03", "T04"],
+  "notes": "默认可行演示场景：保留首段、中段和后段各1项任务，用于首先验证状态网络、车辆移动、无人机服务、会合和换电逻辑。"
+}
